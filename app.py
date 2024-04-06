@@ -71,6 +71,9 @@ def main():
     # FPS計測モジュール ########################################################
     cvFpsCalc = CvFpsCalc(buffer_len=10)
 
+
+    training_data_writer = csv.writer(open(gc.training_data_path, 'a', newline=""))
+
     #  ########################################################################
     mode = 0
 
@@ -79,6 +82,7 @@ def main():
 
         key = cv.waitKey(10)
         if key == 27:  # ESC
+            training_data_writer.close()
             break
         number, mode = select_mode(key, mode)
 
@@ -103,7 +107,9 @@ def main():
                 landmark_list = calc_landmark_list(debug_image, hand_landmarks)
                 pre_processed_landmark_list = pre_process_landmark(
                     landmark_list)
-                logging_csv(number, mode, pre_processed_landmark_list)
+
+                if mode == 1:
+                    logging_csv(training_data_writer, number, pre_processed_landmark_list)
 
                 gesture, confidence = classifier.classify(pre_processed_landmark_list)
 
@@ -206,15 +212,9 @@ def pre_process_landmark(landmark_list):
     return temp_landmark_list
 
 
-def logging_csv(number, mode, landmark_list):
-    if mode == 0:
-        pass
-    if mode == 1 and (0 <= number <= 9):
-        csv_path = gc.training_data_path
-        with open(csv_path, 'a', newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow([number, *landmark_list])
-    return
+def logging_csv(writer, number, landmark_list):
+    if 0 <= number <= 9:
+        writer.writerow([number, *landmark_list])
 
 
 def draw_bounding_rect(use_brect, image, brect):
