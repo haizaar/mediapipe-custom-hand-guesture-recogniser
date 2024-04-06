@@ -4,7 +4,6 @@ import csv
 import copy
 import argparse
 import itertools
-from collections import Counter
 from collections import deque
 
 import cv2 as cv
@@ -82,13 +81,6 @@ def main():
 
     # FPS計測モジュール ########################################################
     cvFpsCalc = CvFpsCalc(buffer_len=10)
-
-    # 座標履歴 #################################################################
-    history_length = 16
-    point_history = deque(maxlen=history_length)
-
-    # フィンガージェスチャー履歴 ################################################
-    finger_gesture_history = deque(maxlen=history_length)
 
     #  ########################################################################
     mode = 0
@@ -252,9 +244,9 @@ def draw_info_text(image, brect, handedness, hand_sign_text,
     cv.rectangle(image, (int(brect[0]*.95)-2, int(brect[1]*.95)), (int(brect[2]*1.05)+2, int((brect[1]-22)*.95) - 30),
                  (255, 0, 255), -1)
 
-    info_text = handedness.classification[0].label[0:]
+    info_text = handedness.classification[0].label[0:][0]
     if hand_sign_text != "":
-        info_text = info_text + ':' + hand_sign_text
+        info_text = info_text + ': ' + hand_sign_text
     cv.putText(image, info_text, (int(brect[0]*.95) + 5, int(brect[1]*.95) - 8),
                cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv.LINE_AA)
 
