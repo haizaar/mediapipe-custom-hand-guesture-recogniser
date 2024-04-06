@@ -13,7 +13,6 @@ import mediapipe as mp
 
 from utils import CvFpsCalc
 from model import KeyPointClassifier
-from model import PointHistoryClassifier
 
 import uberlogging
 import structlog
@@ -73,21 +72,12 @@ def main():
 
     keypoint_classifier = KeyPointClassifier()
 
-    point_history_classifier = PointHistoryClassifier()
-
     # ラベル読み込み ###########################################################
     with open('model/keypoint_classifier/keypoint_classifier_label.csv',
               encoding='utf-8-sig') as f:
         keypoint_classifier_labels = csv.reader(f)
         keypoint_classifier_labels = [
             row[0] for row in keypoint_classifier_labels
-        ]
-    with open(
-            'model/point_history_classifier/point_history_classifier_label.csv',
-            encoding='utf-8-sig') as f:
-        point_history_classifier_labels = csv.reader(f)
-        point_history_classifier_labels = [
-            row[0] for row in point_history_classifier_labels
         ]
 
     # FPS計測モジュール ########################################################
@@ -235,29 +225,6 @@ def pre_process_landmark(landmark_list):
     temp_landmark_list = list(map(normalize_, temp_landmark_list))
 
     return temp_landmark_list
-
-
-def pre_process_point_history(image, point_history):
-    image_width, image_height = image.shape[1], image.shape[0]
-
-    temp_point_history = copy.deepcopy(point_history)
-
-    # 相対座標に変換
-    base_x, base_y = 0, 0
-    for index, point in enumerate(temp_point_history):
-        if index == 0:
-            base_x, base_y = point[0], point[1]
-
-        temp_point_history[index][0] = (temp_point_history[index][0] -
-                                        base_x) / image_width
-        temp_point_history[index][1] = (temp_point_history[index][1] -
-                                        base_y) / image_height
-
-    # 1次元リストに変換
-    temp_point_history = list(
-        itertools.chain.from_iterable(temp_point_history))
-
-    return temp_point_history
 
 
 def logging_csv(number, mode, landmark_list):
