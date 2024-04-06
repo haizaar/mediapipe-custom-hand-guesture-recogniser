@@ -4,10 +4,13 @@ import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 
+import models.gesture_classifier as gc
+
 RANDOM_SEED = 42
 
-dataset = 'model/keypoint_classifier/keypoint.csv'
-model_save_path = 'model/keypoint_classifier/keypoint_classifier.hdf5'
+dataset = str(gc.training_data_path)
+tflite_save_path = str(gc.model_path)
+model_save_path = str(gc.model_hdf5_path)
 
 NUM_CLASSES = 4
 
@@ -79,7 +82,6 @@ print_confusion_matrix(y_test, y_pred)
 
 model.save(model_save_path, include_optimizer=False)
 
-tflite_save_path = 'model/keypoint_classifier/keypoint_classifier.tflite'
 
 converter = tf.lite.TFLiteConverter.from_keras_model(model)
 converter.optimizations = [tf.lite.Optimize.DEFAULT]

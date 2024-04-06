@@ -1,17 +1,14 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import csv
 import copy
 import argparse
 import itertools
-from collections import deque
 
 import cv2 as cv
 import numpy as np
 import mediapipe as mp
 
 from utils import CvFpsCalc
-from model import KeyPointClassifier
+import models.gesture_classifier as gc
 
 import uberlogging
 import structlog
@@ -69,15 +66,7 @@ def main():
         min_tracking_confidence=min_tracking_confidence,
     )
 
-    keypoint_classifier = KeyPointClassifier()
-
-    # ラベル読み込み ###########################################################
-    with open('model/keypoint_classifier/keypoint_classifier_label.csv',
-              encoding='utf-8-sig') as f:
-        keypoint_classifier_labels = csv.reader(f)
-        keypoint_classifier_labels = [
-            row[0] for row in keypoint_classifier_labels
-        ]
+    classifier = gc.GestureClassifier()
 
     # FPS計測モジュール ########################################################
     cvFpsCalc = CvFpsCalc(buffer_len=10)
@@ -88,20 +77,18 @@ def main():
     while True:
         fps = cvFpsCalc.get()
 
-        # キー処理(ESC：終了) #################################################
         key = cv.waitKey(10)
         if key == 27:  # ESC
             break
         number, mode = select_mode(key, mode)
 
-        # カメラキャプチャ #####################################################
         ret, image = cap.read()
         if not ret:
             break
-        image = cv.flip(image, 1)  # ミラー表示
+        image = cv.flip(image, 1)  # Put e.g. "right" on the right
+        # FIXME: Why to create a copy?
         debug_image = copy.deepcopy(image)
 
-        # 検出実施 #############################################################
         image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
 
         image.flags.writeable = False
@@ -118,10 +105,9 @@ def main():
                     landmark_list)
                 logging_csv(number, mode, pre_processed_landmark_list)
 
-                hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
+                gesture, confidence = classifier.classify(pre_processed_landmark_list)
 
                 debug_image = draw_bounding_rect(use_brect, debug_image, brect)
-                #debug_image = draw_landmarks(debug_image, landmark_list)
                 mp.solutions.drawing_utils.draw_landmarks(
                     debug_image,
                     hand_landmarks,
@@ -133,7 +119,8 @@ def main():
                     debug_image,
                     brect,
                     handedness,
-                    keypoint_classifier_labels[hand_sign_id],
+                    gesture,
+                    confidence,
                 )
 
         debug_image = draw_info(debug_image, fps, mode, number)
@@ -223,7 +210,7 @@ def logging_csv(number, mode, landmark_list):
     if mode == 0:
         pass
     if mode == 1 and (0 <= number <= 9):
-        csv_path = 'model/keypoint_classifier/keypoint.csv'
+        csv_path = gc.training_data_path
         with open(csv_path, 'a', newline="") as f:
             writer = csv.writer(f)
             writer.writerow([number, *landmark_list])
@@ -239,15 +226,14 @@ def draw_bounding_rect(use_brect, image, brect):
     return image
 
 
-def draw_info_text(image, brect, handedness, hand_sign_text,
-                   ):
+def draw_info_text(image, brect, handedness, gesture: gc.Gesture, confidence: gc.Confidence):
     cv.rectangle(image, (int(brect[0]*.95)-2, int(brect[1]*.95)), (int(brect[2]*1.05)+2, int((brect[1]-22)*.95) - 30),
                  (255, 0, 255), -1)
 
     info_text = handedness.classification[0].label[0:][0]
-    if hand_sign_text != "":
-        info_text = info_text + ': ' + hand_sign_text
-    cv.putText(image, info_text, (int(brect[0]*.95) + 5, int(brect[1]*.95) - 8),
+    if gesture:
+        info_text +=  f": {gesture.name} {confidence:.2f}"
+        cv.putText(image, info_text, (int(brect[0]*.95) + 5, int(brect[1]*.95) - 8),
                cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv.LINE_AA)
 
     return image
