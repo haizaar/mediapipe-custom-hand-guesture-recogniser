@@ -1,0 +1,12 @@
+[virtualenvs]
+in-project = true
+# Doesn't work :/
+# https://github.com/python-poetry/poetry/issues/9278
+# See shell.nix
+prefer-active-python = true
+
+[virtualenvs.options]
+# We run in nix-shell so our system packages are already isolated
+# and we have to access them since not all packages come through poetry
+system-site-packages = true
+

@@ -3,6 +3,10 @@
 import numpy as np
 import tensorflow as tf
 
+import structlog
+
+logger = structlog.get_logger(__name__)
+
 
 class KeyPointClassifier(object):
     def __init__(
@@ -30,7 +34,9 @@ class KeyPointClassifier(object):
         output_details_tensor_index = self.output_details[0]['index']
 
         result = self.interpreter.get_tensor(output_details_tensor_index)
+        weights = np.squeeze(result)
+        logger.info(weights=weights)
 
-        result_index = np.argmax(np.squeeze(result))
+        result_index = np.argmax(weights)
 
         return result_index

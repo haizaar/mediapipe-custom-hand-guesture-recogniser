@@ -130,3 +130,7 @@ dmypy.json
 
 # bat
 *.bat
+
+.envrc
+.direnv
+.poetry.lock.sha512
