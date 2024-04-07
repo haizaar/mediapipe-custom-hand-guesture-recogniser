@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
 mediapipe = "^0.10.9"
-
+tensorflow = {version = "2.13.0", platform = "darvin"}
 
 [tool.poetry.group.dev.dependencies]
 jupyter = "^1.0.0"
