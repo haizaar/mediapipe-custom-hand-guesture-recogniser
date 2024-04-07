@@ -7,8 +7,8 @@ license = "Apache 2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-mediapipe = "^0.10.11"
+python = ">=3.11,<3.12"
+mediapipe = "^0.10.9"
 
 
 [tool.poetry.group.dev.dependencies]
