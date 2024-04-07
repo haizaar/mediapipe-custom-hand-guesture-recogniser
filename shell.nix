@@ -31,6 +31,8 @@ pin.pkgs.mkShell {
     # Hence we need to install *any* python package to populate PYTHONPATH
     python311Packages.structlog
 
+  ] ++ lib.optionals stdenv.isLinux [
+
     # Bringing ML-related stuff through nix because PyPi ones segfault, mismatch versions, etc.
     # WARNING: Stick with 23.11 NixOS branch! Newer versions comes with new version fo tensorflow/keras
     #          which have break API changes!
@@ -41,7 +43,7 @@ pin.pkgs.mkShell {
     python311Packages.ml-dtypes
 
 
-    # These + the LD_LIBRARY_PATH are requires for mediapipe which we insall through poetry
+    # These + the LD_LIBRARY_PATH are required for mediapipe which we insall through poetry
     zlib
     libGL
     glib
