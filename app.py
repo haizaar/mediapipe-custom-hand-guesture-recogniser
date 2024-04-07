@@ -72,7 +72,8 @@ def main():
     cvFpsCalc = CvFpsCalc(buffer_len=10)
 
 
-    training_data_writer = csv.writer(open(gc.training_data_path, 'a', newline=""))
+    training_data_file = open(gc.training_data_path, 'a', newline="")
+    training_data_writer = csv.writer(training_data_file)
 
     #  ########################################################################
     mode = 0
@@ -82,7 +83,7 @@ def main():
 
         key = cv.waitKey(10)
         if key == 27:  # ESC
-            training_data_writer.close()
+            training_data_file.close()
             break
         number, mode = select_mode(key, mode)
 
