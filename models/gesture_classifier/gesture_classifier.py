@@ -21,7 +21,7 @@ class Gesture(Enum):
     rock = 0
     paper = 1
     scissors = 2
-    thumbs_up = 3
+    thumb_up = 3
 
 
 class GestureClassifier(object):
