@@ -17,7 +17,6 @@ exclude = [
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
-mediapipe = "=0.10.9"  # has to be this version for darwin!
 tensorflow = {version = "2.13.0", platform = "darwin"}
 
 [tool.poetry.group.dev.dependencies]
@@ -27,6 +26,7 @@ matplotlib = "^3.8.4"
 pandas = "^2.2.1"
 seaborn = "^0.13.2"
 uberlogging = "^0.7.0"
+mediapipe = "=0.10.9"  # has to be this version for darwin!
 
 [build-system]
 requires = ["poetry-core"]
