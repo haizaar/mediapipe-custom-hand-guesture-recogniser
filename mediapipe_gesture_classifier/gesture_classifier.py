@@ -4,7 +4,6 @@ from typing import Optional
 from enum import Enum
 from pathlib import Path
 
-import cv2 as cv
 import numpy as np
 import tensorflow as tf
 
@@ -68,10 +67,7 @@ class GestureClassifier(object):
 
             landmark_array = np.append(landmark_array, landmark_point, axis=0)
 
-        x, y, w, h = cv.boundingRect(landmark_array)
-
-        return [x, y, x + w, y + h]
-
+        return landmark_array
 
     def calc_landmark_list(self, image, landmarks):
         image_width, image_height = image.shape[1], image.shape[0]

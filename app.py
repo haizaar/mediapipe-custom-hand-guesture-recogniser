@@ -104,7 +104,6 @@ def main():
         if results.multi_hand_landmarks is not None:
             for hand_landmarks, handedness in zip(results.multi_hand_landmarks,
                                                   results.multi_handedness):
-                brect = classifier.calc_bounding_rect(debug_image, hand_landmarks)
                 landmark_list = classifier.calc_landmark_list(debug_image, hand_landmarks)
                 pre_processed_landmark_list = classifier.pre_process_landmark(landmark_list)
 
@@ -113,6 +112,9 @@ def main():
 
                 gesture, confidence = classifier.classify(pre_processed_landmark_list)
 
+                brect_array = classifier.calc_bounding_rect(debug_image, hand_landmarks)
+                x, y, w, h = cv.boundingRect(brect_array)
+                brect = [x, y, x + w, y + h]
                 debug_image = draw_bounding_rect(use_brect, debug_image, brect)
                 mp.solutions.drawing_utils.draw_landmarks(
                     debug_image,
