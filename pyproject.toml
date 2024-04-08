@@ -48,3 +48,6 @@ push = true
 "mediapipe_gesture_classifier/__init__.py" = [
     "{version}",
 ]
+"pyproject.toml" = [
+    '^version = "{version}"',
+]
