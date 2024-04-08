@@ -30,7 +30,21 @@ pandas = "^2.2.1"
 seaborn = "^0.13.2"
 uberlogging = "^0.7.0"
 mediapipe = "=0.10.9"  # has to be this version for darwin!
+bumpver = "^2023.1129"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[bumpver]
+current_version = "0.1.0"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "Release {new_version}"
+commit = true
+tag = true
+push = true
+
+[bumpver.file_patterns]
+"mediapipe_gesture_classifier/__init__.py" = [
+    "{version}",
+]
