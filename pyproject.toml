@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mediapipe-custom-hand-guesture-recogniser"
-version = "0.1.0"
+version = "0.1.2"
 description = "Custom hand guesture recognition using mediapipe"
 license = "Apache 2.0"
 readme = "README.md"
