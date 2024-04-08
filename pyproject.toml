@@ -2,13 +2,22 @@
 name = "mediapipe-custom-hand-guesture-recogniser"
 version = "0.1.0"
 description = "Custom hand guesture recognition using mediapipe"
-authors = ["Kazuhito Takahashi", "Zaar Hai <hello@zaar.me>"]
 license = "Apache 2.0"
 readme = "README.md"
+authors = [
+  "Kazuhito Takahashi",
+  "Matthias Baetens <matthias@doit.com>",
+]
+packages = [
+  { include = "mediapipe_gesture_classifier" },
+]
+exclude = [
+  "mediapipe_gesture_classifier/*.csv",
+]
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
-mediapipe = "=0.10.9"  # has to be this version for macos!
+mediapipe = "=0.10.9"  # has to be this version for darwin!
 tensorflow = {version = "2.13.0", platform = "darwin"}
 
 [tool.poetry.group.dev.dependencies]
