@@ -17,6 +17,9 @@ exclude = [
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
+# This is just for dependency checks - doesn't work with poetry
+# https://github.com/python-poetry/poetry/issues/8271
+# Just use nix on linux or pip on darwin
 tensorflow = {version = "2.13.0", platform = "darwin"}
 
 [tool.poetry.group.dev.dependencies]
