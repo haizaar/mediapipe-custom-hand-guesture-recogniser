@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 
-import models.gesture_classifier as gc
+import mediapipe_gesture_classifier as gc
 
 RANDOM_SEED = 42
 
